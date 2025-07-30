@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from .models import Book
 from .models import Library
+from .models import UserProfile
 
 from django.views.generic.detail import DetailView
 
@@ -11,6 +12,10 @@ from django.views.generic import CreateView
 from django.contrib.auth import login
 
 from django.contrib.auth.forms import UserCreationForm
+
+from django.contrib.auth.decorators import login_required
+
+from django.http import HttpResponseForbidden
 
 # Create your views here.
 
@@ -39,4 +44,37 @@ def register_view(request):
         form = UserCreationForm() # built-in form for user registration
     return render(request, 'relationship_app/register.html', {'form': form})
 
+@login_required
+def admin_view(request):
+    try:
+        profile = request.user.userprofile
+    except UserProfile.DoesNotExist:
+        return HttpResponseForbidden("You do not have a profile associated with your account")
+    
+    if profile.role != 'Admin':
+        return HttpResponseForbidden("You are not allowed to view this page.")
+    
+    return render(request, 'relationship_app/admin_view.html')
 
+def librarian_view(request):
+    try:
+        profile = request.user.userprofile
+    except UserProfile.DoesNotExist:
+        return HttpResponseForbidden("You do not have a profile associated with your account.")
+    
+    if profile.role != 'Librarian':
+        return HttpResponseForbidden("You are not allowed to view this page.")
+    
+    return render(request, 'relationship_app/librarian_view.html')
+
+def member_view(request):
+    try:
+        profile = request.userprofile
+    except UserProfile.DoesNotExist:
+        return HttpResponseForbidden("You do not have a profile associated with this page.")
+    
+    if profile.role != 'member':
+        return HttpResponseForbidden("You are not allowed to view this page.")
+    
+    return render(request, 'relationship_app/member_view.html')
+        
