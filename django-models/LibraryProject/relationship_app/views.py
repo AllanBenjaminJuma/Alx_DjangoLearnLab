@@ -5,7 +5,7 @@ from .models import UserProfile
 
 from django.views.generic.detail import DetailView
 
-from .decorators import role_required
+from .decorators import user_passes_test
 
 from django.contrib import messages
 from django.shortcuts import render, redirect
@@ -47,7 +47,7 @@ def register_view(request):
     return render(request, 'relationship_app/register.html', {'form': form})
 
 @login_required
-@role_required
+@user_passes_test
 def admin_view(request):
     try:
         profile = request.user.userprofile
@@ -59,7 +59,7 @@ def admin_view(request):
     
     return render(request, 'relationship_app/admin_view.html')
 
-@role_required
+@user_passes_test
 def librarian_view(request):
     try:
         profile = request.user.userprofile
@@ -71,7 +71,7 @@ def librarian_view(request):
     
     return render(request, 'relationship_app/librarian_view.html')
 
-@role_required
+@user_passes_test
 def member_view(request):
     try:
         profile = request.userprofile
