@@ -16,6 +16,7 @@ from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import permission_required
 
 from django.http import HttpResponseForbidden
 
@@ -74,7 +75,7 @@ def librarian_view(request):
 @user_passes_test
 def member_view(request):
     try:
-        profile = request.userprofile
+        profile = request.user.userprofile
     except UserProfile.DoesNotExist:
         return HttpResponseForbidden("You do not have a profile associated with this page.")
     
@@ -83,3 +84,43 @@ def member_view(request):
     
     return render(request, 'relationship_app/member_view.html')
         
+from .forms import BookForm
+
+@login_required
+@permission_required('relationship_app.can_add_book', raise_exception=True)
+def add_book(request):
+    if request.method == 'POST':
+        form = BookForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Book added successfully!")
+            return redirect('list_books')
+    else:
+        form = BookForm()
+    return render(request, 'relationship_app/add_book.html', {'form': form})
+
+from django.shortcuts import get_object_or_404
+
+@login_required
+@permission_required('relationship_app.can_edit_book', raise_exception=True)
+def edit_book(request, pk):
+    book = get_object_or_404(Book, pk=pk)
+    if request.method == 'POST':
+        form = BookForm(request.POST, instance=book)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Book updated successfully!")
+            return redirect('list_books')
+    else:
+        form = BookForm(instance=book)
+    return render(request, 'relationship_app/edit_book.html', {'form': form})
+
+@login_required
+@permission_required('relationship_app.can_delete_book', raise_exception=True)
+def delete_book(request, pk):
+    book = get_object_or_404(Book, pk=pk)
+    if request.method == 'POST':
+        book.delete()
+        messages.success(request, "Book deleted successfully!")
+        return redirect('list_books')
+    return render(request, 'relationship_app/confirm_delete.html', {'book': book})

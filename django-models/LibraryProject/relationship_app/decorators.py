@@ -1,8 +1,8 @@
-from django.contrib.auth.decorators import user_passes_test
+from django.http import HttpResponseForbidden
 
-def user_passes_test(role):
-    def decorator(view_func):
-        def check_role(user):
-            return user.is_authenticated and hasattr(user, 'user profile') and user.userprofile.role == role
-        return user_passes_test(check_role)(view_func)
-    return
+def user_passes_test(view_func):
+    def wrapper(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return HttpResponseForbidden("You must be logged in.")
+        return view_func(request, *args, **kwargs)
+    return wrapper
