@@ -102,7 +102,7 @@ def add_book(request):
 from django.shortcuts import get_object_or_404
 
 @login_required
-@permission_required('relationship_app.can_edit_book', raise_exception=True)
+@permission_required('relationship_app.can_change_book', raise_exception=True)
 def edit_book(request, pk):
     book = get_object_or_404(Book, pk=pk)
     if request.method == 'POST':
