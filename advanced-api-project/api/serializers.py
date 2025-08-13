@@ -8,7 +8,7 @@ Adds:
         - A validation for the publication year not being greater than the current year.
 """
 
-class BookSerializer(serializers.Serializer):
+class BookSerializer(serializers.ModelSerializer):
     title = serializers.CharField(required = True, allow_blank = True, max_length = 200)
     publication_year = serializers.IntegerField(required = True, max_length = 4, default=2025)
     author = serializers.CharField(required = True, max_length = 200)
@@ -23,6 +23,6 @@ class BookSerializer(serializers.Serializer):
     Serializer for the Author Model.    
 """
 
-class AuthorSerializer(serializers.Serializer):
+class AuthorSerializer(serializers.ModelSerializer):
     name = serializers.CharField(required = True, max_length = 200)
     
