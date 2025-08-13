@@ -24,5 +24,5 @@ class BookSerializer(serializers.ModelSerializer):
 """
 
 class AuthorSerializer(serializers.ModelSerializer):
-    name = serializers.CharField(required = True, max_length = 200)
+    name = serializers.CharField(required=True, max_length=200, many=True, read_only=True)
     
