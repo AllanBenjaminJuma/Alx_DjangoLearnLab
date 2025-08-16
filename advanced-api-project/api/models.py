@@ -18,5 +18,5 @@ class Author(models.Model):
 """
 class Book(models.Model):
     title = models.CharField(max_length=200)
-    publication_year = datetime.datetime.year
+    publication_year = models.IntegerField(default=2025)
     author = models.ManyToManyField(Author)
