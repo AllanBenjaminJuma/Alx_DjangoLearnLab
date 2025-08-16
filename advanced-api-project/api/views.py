@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework import generics, filters
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from django.views import View
 
 from .models import Book
