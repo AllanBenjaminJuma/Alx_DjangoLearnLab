@@ -30,7 +30,7 @@ class ListView(generics.ListAPIView):
     
     permission_classes = [permissions.AllowAny]
 
-class RetrieveBooksView(generics.RetrieveAPIView):
+class DetailView(generics.RetrieveAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     
