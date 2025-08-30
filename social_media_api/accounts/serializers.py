@@ -3,10 +3,12 @@
 from rest_framework import serializers
 from .models import CustomUser
 from django.contrib.auth.password_validation import validate_password
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, get_user_model
 from rest_framework.authtoken.models import Token
 from rest_framework.validators import UniqueValidator
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
+
+User = get_user_model()
 
 class RegistrationSerializer(serializers.ModelSerializer):
    email = serializers.EmailField(
@@ -35,13 +37,14 @@ class RegistrationSerializer(serializers.ModelSerializer):
     
    def create(self, validated_data):
         validated_data.pop('password2')
-        user = CustomUser.objects.create_user(
+        user = User.objects.create_user(
             username=validated_data['username'],
             email = validated_data['email'],
             password=validated_data['password'],
             bio = validated_data['bio'],
             profile_picture= validated_data.get('profile_picture')
         )
+        Token.objects.create(user=user)
         return user
     
 class LoginSerializer(serializers.Serializer):

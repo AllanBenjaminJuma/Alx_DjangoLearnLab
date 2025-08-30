@@ -1,3 +1,5 @@
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
@@ -52,3 +54,16 @@ class LogoutView(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response({'message': 'Successfully logged out'}, status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def profile_view(request):
+    user = request.user
+    return Response({
+        "id": user.id,
+        "username":user.username,
+        "email":user.email,
+        "bio":user.bio,
+        "profile_picture":request.build_absolute_uri(user.profile_picture.url) if user.profile_picture else None
+        
+    })
