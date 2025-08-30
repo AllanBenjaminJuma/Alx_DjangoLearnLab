@@ -8,7 +8,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.validators import UniqueValidator
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 
-User = get_user_model()
+
 
 class RegistrationSerializer(serializers.ModelSerializer):
    email = serializers.EmailField(
@@ -37,14 +37,14 @@ class RegistrationSerializer(serializers.ModelSerializer):
     
    def create(self, validated_data):
         validated_data.pop('password2')
-        user = User.objects.create_user(
+        user = get_user_model().objects.create_user(
             username=validated_data['username'],
             email = validated_data['email'],
             password=validated_data['password'],
             bio = validated_data['bio'],
             profile_picture= validated_data.get('profile_picture')
         )
-        Token.objects.create(user=user)
+        # Token.objects.create(user=user)
         return user
     
 class LoginSerializer(serializers.Serializer):
